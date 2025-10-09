@@ -1,5 +1,16 @@
 class MultiAuth::User
-  def initialize(@provider, @uid, @name, @raw_json, @access_token)
+  def initialize(
+    @provider, @uid, @name, @raw_json, @access_token,
+    @email = nil,
+    @nickname = nil,
+    @first_name = nil,
+    @last_name = nil,
+    @location = nil,
+    @description = nil,
+    @image = nil,
+    @phone = nil,
+    @urls = nil,
+  )
   end
 
   getter provider : String
