@@ -1,3 +1,6 @@
+require "oauth"
+require "oauth2"
+
 class MultiAuth::User
   def initialize(
     @provider, @uid, @name, @raw_json, @access_token,
