@@ -4,6 +4,8 @@ require "../src/multi_auth"
 require "../src/multi_auth/providers/*"
 require "../src/multi_auth/discovery/*"
 
+Spec.before_each &->WebMock.reset
+
 MultiAuth.config("google", "google_id", "google_secret")
 MultiAuth.config("github", "github_id", "github_secret")
 MultiAuth.config("gitlab", "gitlab_id", "gitlab_secret")

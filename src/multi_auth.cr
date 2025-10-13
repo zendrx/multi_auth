@@ -8,9 +8,9 @@ module MultiAuth
   @@configuration = Hash(String, Tuple(String, String)).new
   @@factories = Hash(String, Proc(String, String, MultiAuth::Provider)).new
 
-  def self.make(provider : String, redirect_uri : String)
-    if provider_factory = @@factories[provider]?
-      provider_instance = provider_factory.call(provider, redirect_uri)
+  def self.make(provider : String, redirect_uri : String, provider_id : String? = nil)
+    if provider_id && (provider_factory = @@factories[provider]?)
+      provider_instance = provider_factory.call(provider_id, redirect_uri)
       MultiAuth::Engine.new(provider_instance)
     else
       MultiAuth::Engine.new(provider, redirect_uri)
@@ -25,7 +25,7 @@ module MultiAuth
     @@configuration[provider] = {key, secret}
   end
 
-  # builder is provided ->(provider_name and redirect_uri)
+  # builder is provided ->(provider_id and redirect_uri)
   def self.config(provider : String, &builder : Proc(String, String, MultiAuth::Provider))
     @@factories[provider] = builder
   end
