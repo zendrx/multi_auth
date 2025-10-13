@@ -1,3 +1,4 @@
+require "../multi_auth"
 require "./discovery/well_known"
 
 module MultiAuth::Discovery

@@ -9,11 +9,11 @@ module MultiAuth
   end
 
   @@configuration = Hash(String, Tuple(String, String)).new
-  @@factories = Hash(String, Proc(String, String, MultiAuth::Provider)).new
+  @@factories = Hash(String, Proc(String, String?, MultiAuth::Provider)).new
 
   def self.make(provider : String, redirect_uri : String, provider_id : String? = nil)
-    if provider_id && (provider_factory = @@factories[provider]?)
-      provider_instance = provider_factory.call(provider_id, redirect_uri)
+    if provider_factory = @@factories[provider]?
+      provider_instance = provider_factory.call(redirect_uri, provider_id)
       MultiAuth::Engine.new(provider_instance)
     else
       MultiAuth::Engine.new(provider, redirect_uri)
@@ -29,11 +29,11 @@ module MultiAuth
   end
 
   # builder is provided ->(provider_id and redirect_uri)
-  def self.config(provider : String, &builder : Proc(String, String, MultiAuth::Provider))
+  def self.config(provider : String, &builder : Proc(String, String?, MultiAuth::Provider))
     @@factories[provider] = builder
   end
 
-  def self.config(provider : String, builder : Proc(String, String, MultiAuth::Provider))
+  def self.config(provider : String, builder : Proc(String, String?, MultiAuth::Provider))
     @@factories[provider] = builder
   end
 end

@@ -4,7 +4,7 @@ describe MultiAuth::Provider::GenericOAuth2 do
   # Simulate a database record configuration
   describe "with custom provider configuration" do
     it "generates authorize uri" do
-      MultiAuth.config("user_oauth2") do |db_id, redirect_uri|
+      MultiAuth.config("user_oauth2") do |redirect_uri, db_id|
         MultiAuth::Provider::GenericOAuth2.new(
           provider_name: "oauth2-#{db_id}",
           redirect_uri: redirect_uri,
@@ -36,7 +36,7 @@ describe MultiAuth::Provider::GenericOAuth2 do
     end
 
     it "fetches and maps user data" do
-      MultiAuth.config("user_oauth2") do |db_id, redirect_uri|
+      MultiAuth.config("user_oauth2") do |redirect_uri, db_id|
         MultiAuth::Provider::GenericOAuth2.new(
           provider_name: "oauth2-#{db_id}",
           redirect_uri: redirect_uri,
@@ -90,7 +90,7 @@ describe MultiAuth::Provider::GenericOAuth2 do
     end
 
     it "handles nested JSON paths" do
-      MultiAuth.config("nested_oauth2") do |db_id, redirect_uri|
+      MultiAuth.config("nested_oauth2") do |redirect_uri, db_id|
         MultiAuth::Provider::GenericOAuth2.new(
           provider_name: "oauth2-#{db_id}",
           redirect_uri: redirect_uri,
@@ -144,7 +144,9 @@ describe MultiAuth::Provider::GenericOAuth2 do
     end
 
     it "handles multiple URL mappings" do
-      MultiAuth.config("custom_oauth2") do |db_id, redirect_uri|
+      MultiAuth.config("custom_oauth2") do |redirect_uri, db_id|
+        raise "no oauth2 provider selected" unless db_id
+
         MultiAuth::Provider::GenericOAuth2.new(
           provider_name: db_id,
           redirect_uri: redirect_uri,

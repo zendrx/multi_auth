@@ -18,7 +18,7 @@ The `GenericOAuth2` provider allows you to dynamically configure OAuth2 provider
 The `discover` class method automatically fetches OAuth2 configuration from a domain's `.well-known/oauth-authorization-server` endpoint:
 
 ```crystal
-require "multi_auth/providers/generic_oauth2"
+require "multi_auth/discovery"
 
 # Discover configuration from GitLab
 config = MultiAuth::Discovery.discover("gitlab.com")
@@ -30,27 +30,6 @@ config = MultiAuth::Discovery.discover("gitlab.com")
 # - authentication_scheme: "request_body" or "http_basic"
 # - user_profile_url: "https://gitlab.com/oauth/userinfo"
 # - scopes: "openid profile email"
-
-# Use the discovered config
-MultiAuth.config("gitlab") do |db_id, redirect_uri|
-  MultiAuth::Provider::GenericOAuth2.new(
-    provider_name: "GitLab",
-    redirect_uri: redirect_uri,
-    key: ENV["GITLAB_CLIENT_ID"],
-    secret: ENV["GITLAB_CLIENT_SECRET"],
-    site: config[:site],
-    authorize_url: config[:authorize_url],
-    token_url: config[:token_url],
-    authentication_scheme: config[:authentication_scheme],
-    user_profile_url: config[:user_profile_url] || "",
-    scopes: config[:scopes],
-    info_mappings: {
-      "uid"   => "sub",
-      "name"  => "name",
-      "email" => "email",
-    }
-  )
-end
 ```
 
 The discovery helper:
@@ -67,7 +46,8 @@ Use the factory method to dynamically create providers:
 
 ```crystal
 # Example: Load configuration from database
-MultiAuth.config("user_oauth2") do |database_id, redirect_uri|
+MultiAuth.config("user_oauth2") do |redirect_uri, database_id|
+  raise "no oauth2 provider selected" unless database_id
   config = OAuthProviderConfig.find(database_id) # Your DB model
 
   MultiAuth::Provider::GenericOAuth2.new(
@@ -176,7 +156,9 @@ info_mappings: {
 
 ```crystal
 # In your application initialization or controller
-MultiAuth.config("generic_oauth2") do |database_id, redirect_uri|
+MultiAuth.config("generic_oauth2") do  |redirect_uri, database_id|
+  raise "no oauth2 provider selected" unless database_id
+
   # Load from database
   config = OAuthProviderConfig.find(database_id)
 

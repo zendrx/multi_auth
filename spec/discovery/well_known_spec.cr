@@ -87,7 +87,7 @@ describe MultiAuth::Discovery::OAuth2Metadata do
       config = MultiAuth::Discovery.discover("auth.test.com")
 
       # Use discovered config to initialize provider
-      MultiAuth.config("discovered_oauth2") do |db_id, redirect_uri|
+      MultiAuth.config("discovered_oauth2") do |redirect_uri, db_id|
         MultiAuth::Provider::GenericOAuth2.new(
           provider_name: "discovered-#{db_id}",
           redirect_uri: redirect_uri,
