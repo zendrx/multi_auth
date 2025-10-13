@@ -5,6 +5,9 @@ module MultiAuth
     VERSION = {{ `shards version "#{__DIR__}"`.chomp.stringify.downcase }}
   {% end %}
 
+  class Exception < ::Exception
+  end
+
   @@configuration = Hash(String, Tuple(String, String)).new
   @@factories = Hash(String, Proc(String, String, MultiAuth::Provider)).new
 

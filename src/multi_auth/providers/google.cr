@@ -64,7 +64,7 @@ class MultiAuth::Provider::Google < MultiAuth::Provider
 
   private def primary(field)
     primary = primary?(field)
-    raise "No primary in field #{field}" unless primary
+    raise MultiAuth::Exception.new("No primary in field #{field}") unless primary
     primary
   end
 
@@ -85,7 +85,7 @@ class MultiAuth::Provider::Google < MultiAuth::Provider
 
   private def build_user(raw_json, access_token)
     @json = JSON.parse(raw_json)
-    raise json["error"]["message"].as_s if json["error"]?
+    raise MultiAuth::Exception.new(json["error"]["message"].as_s) if json["error"]?
 
     name = if primary?("names")
              primary("names")
