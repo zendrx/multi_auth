@@ -13,40 +13,11 @@ class MultiAuth::Provider::Discord < MultiAuth::Provider
       "discord.com",
       key,
       secret,
-      authorize_uri: "/api/oauth2/authorize",
+      authorize_uri: "/oauth2/authorize",
       redirect_uri: redirect_uri
     )
 
     client.get_authorize_uri(scope, state)
-  end
-
-  private class DiscordUser
-    include JSON::Serializable
-
-    property raw_json : String?
-    property access_token : OAuth::AccessToken?
-
-    @[JSON::Field(converter: String::RawConverter)]
-    property id : String
-
-    property name : String
-    property email : String?
-    property avatar : String?
-  end
-
-  private def fetch_discord_user(oauth_token, oauth_verifier)
-    request_token = OAuth::RequestToken.new(oauth_token, "")
-    access_token = consumer.get_access_token(request_token, oauth_verifier)
-
-    client = HTTP::Client.new("discord.com", tls: true)
-    access_token.authenticate(client, key, secret)
-
-    raw_json = client.get("/oauth2/authorize").body
-
-    DiscordUser.from_json(raw_json).tap do |user|
-      user.access_token = access_token
-      user.raw_json = raw_json
-    end
   end
 
   def user(params : Hash(String, String))
@@ -54,7 +25,7 @@ class MultiAuth::Provider::Discord < MultiAuth::Provider
       "discord.com",
       key,
       secret,
-      token_uri: "/api/v8/oauth2/token",
+      token_uri: "/api/oauth2/token",
       redirect_uri: redirect_uri,
       auth_scheme: :request_body
     )
@@ -64,7 +35,7 @@ class MultiAuth::Provider::Discord < MultiAuth::Provider
     api = HTTP::Client.new("discord.com", tls: true)
     access_token.authenticate(api)
 
-    raw_json = api.get("/api/v8/oauth2/@me").body
+    raw_json = api.get("/api/oauth2/@me").body
 
     build_user(raw_json, access_token)
   end

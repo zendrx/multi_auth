@@ -53,7 +53,7 @@ class MultiAuth::Provider::Facebook < MultiAuth::Provider
     api = HTTP::Client.new("graph.facebook.com", tls: true)
     access_token.authenticate(api)
 
-    raw_json = api.get("/v2.9/me?fields=id,name,last_name,first_name,email,location,about,website").body
+    raw_json = api.get("/v24.0/me?fields=id,name,last_name,first_name,email,location,about,website").body
 
     fb_user = FbUser.from_json(raw_json)
     fb_user.access_token = access_token
@@ -68,7 +68,7 @@ class MultiAuth::Provider::Facebook < MultiAuth::Provider
       key,
       secret,
       redirect_uri: redirect_uri,
-      authorize_uri: "/v2.9/dialog/oauth",
+      authorize_uri: "/v24.0/dialog/oauth",
     )
   end
 
@@ -78,7 +78,7 @@ class MultiAuth::Provider::Facebook < MultiAuth::Provider
       key,
       secret,
       redirect_uri: redirect_uri,
-      token_uri: "/v2.9/oauth/access_token",
+      token_uri: "/v24.0/oauth/access_token",
       auth_scheme: :request_body
     )
   end
