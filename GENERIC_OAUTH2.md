@@ -5,12 +5,61 @@ The `GenericOAuth2` provider allows you to dynamically configure OAuth2 provider
 ## Features
 
 - **Dynamic Configuration**: Configure providers from database records at runtime
+- **Automatic Discovery**: Discover OAuth2 configuration from `.well-known/oauth-authorization-server` endpoints
 - **Flexible Mapping**: Map any JSON structure to User fields using dot notation
 - **Multiple URL Support**: Map multiple URL fields (website, blog, social links, etc.)
 - **Nested JSON Support**: Access deeply nested fields like `data.user.profile.name`
 - **Custom Authentication Schemes**: Supports `http_basic` and `request_body` authentication
 
 ## Usage
+
+### Discovery Helper
+
+The `discover` class method automatically fetches OAuth2 configuration from a domain's `.well-known/oauth-authorization-server` endpoint:
+
+```crystal
+require "multi_auth/providers/generic_oauth2"
+
+# Discover configuration from GitLab
+config = MultiAuth::Discovery.discover("gitlab.com")
+
+# Returns a NamedTuple with:
+# - site: "https://gitlab.com"
+# - authorize_url: "/oauth/authorize"
+# - token_url: "/oauth/token"
+# - authentication_scheme: "request_body" or "http_basic"
+# - user_profile_url: "https://gitlab.com/oauth/userinfo"
+# - scopes: "openid profile email"
+
+# Use the discovered config
+MultiAuth.config("gitlab") do |db_id, redirect_uri|
+  MultiAuth::Provider::GenericOAuth2.new(
+    provider_name: "GitLab",
+    redirect_uri: redirect_uri,
+    key: ENV["GITLAB_CLIENT_ID"],
+    secret: ENV["GITLAB_CLIENT_SECRET"],
+    site: config[:site],
+    authorize_url: config[:authorize_url],
+    token_url: config[:token_url],
+    authentication_scheme: config[:authentication_scheme],
+    user_profile_url: config[:user_profile_url] || "",
+    scopes: config[:scopes],
+    info_mappings: {
+      "uid"   => "sub",
+      "name"  => "name",
+      "email" => "email",
+    }
+  )
+end
+```
+
+The discovery helper:
+- Automatically adds `https://` scheme if not present
+- Parses the issuer to extract the base site URL
+- Extracts authorization and token endpoint paths
+- Detects authentication scheme from supported methods
+- Builds default scopes from common OpenID scopes (openid, profile, email)
+- Returns userinfo endpoint if available
 
 ### Basic Setup
 
