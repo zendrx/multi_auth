@@ -43,7 +43,7 @@ module MultiAuth::Discovery
   end
 
   # https://datatracker.ietf.org/doc/html/rfc7591
-  def self.perform_dynamic_client_registration(metadata : OAuthMetadata, registration : ClientRegistrationRequest) : ClientRegistrationResponse
+  def self.perform_dynamic_client_registration(metadata : OAuth2Metadata, registration : ClientRegistrationRequest) : ClientRegistrationResponse
     endpoint = metadata.registration_endpoint
     raise "No registration_endpoint provided" unless endpoint
 
