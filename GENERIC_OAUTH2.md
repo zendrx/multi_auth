@@ -196,10 +196,12 @@ MultiAuth.config("generic_oauth2") do |database_id, redirect_uri|
 end
 
 # Usage in your OAuth flow
+# NOTE:: the optional ?: query param works in spider-gazelle and lucky frameworks
 get "/auth/:provider/?:id" do
   provider = params["provider"]
   provider_id = params["id"]?
   engine = MultiAuth.make(provider, "/auth/#{provider}/callback/#{provider_id}", provider_id)
+
   redirect engine.authorize_uri
 end
 
