@@ -1,3 +1,5 @@
+require "../../multi_auth"
+require "oauth2"
 require "uuid"
 
 class MultiAuth::Provider::Restream < MultiAuth::Provider
@@ -60,3 +62,5 @@ class MultiAuth::Provider::Restream < MultiAuth::Provider
     )
   end
 end
+
+MultiAuth::Providers.register("restream", MultiAuth::Provider::Restream)

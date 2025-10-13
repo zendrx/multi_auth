@@ -1,3 +1,6 @@
+require "../../multi_auth"
+require "oauth2"
+
 class MultiAuth::Provider::Github < MultiAuth::Provider
   def authorize_uri(scope = nil, state = nil)
     scope ||= "user:email"
@@ -72,3 +75,5 @@ class MultiAuth::Provider::Github < MultiAuth::Provider
     )
   end
 end
+
+MultiAuth::Providers.register("github", MultiAuth::Provider::Github)

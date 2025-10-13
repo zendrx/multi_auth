@@ -1,3 +1,6 @@
+require "../../multi_auth"
+require "oauth2"
+
 class MultiAuth::Provider::Google < MultiAuth::Provider
   def authorize_uri(scope = nil, state = nil)
     defaults = [
@@ -85,10 +88,10 @@ class MultiAuth::Provider::Google < MultiAuth::Provider
     raise MultiAuth::Exception.new(json["error"]["message"].as_s) if json["error"]?
 
     name = if primary?("names")
-      primary("names")
-    else
-      JSON::Any.new({} of String => JSON::Any)
-    end
+             primary("names")
+           else
+             JSON::Any.new({} of String => JSON::Any)
+           end
 
     display_name = name["displayName"]?.to_s
 
@@ -121,3 +124,5 @@ class MultiAuth::Provider::Google < MultiAuth::Provider
     user
   end
 end
+
+MultiAuth::Providers.register("google", MultiAuth::Provider::Google)

@@ -1,3 +1,6 @@
+require "../../multi_auth"
+require "oauth2"
+
 class MultiAuth::Provider::Gitlab < MultiAuth::Provider
   def authorize_uri(scope = nil, state = nil)
     scope ||= ""
@@ -58,7 +61,7 @@ class MultiAuth::Provider::Gitlab < MultiAuth::Provider
     gitlab_user
   end
 
-  private def gitlab_url
+  property gitlab_url : String do
     ENV["OAUTH_GITLAB_URI"]? || "gitlab.com"
   end
 
@@ -74,3 +77,5 @@ class MultiAuth::Provider::Gitlab < MultiAuth::Provider
     )
   end
 end
+
+MultiAuth::Providers.register("gitlab", MultiAuth::Provider::Gitlab)
