@@ -9,8 +9,13 @@ MultiAuth is a library that standardizes multi-provider authentication for web a
 - Facebook.com
 - Vk.com
 - Google.com, [setup google](https://github.com/msa7/multi_auth/blob/master/setup.md#google)
-- Twitter.com
+- X/Twitter
 - Restream.io
+- [Generic OAuth2](GENERIC_OAUTH2.md) (manually configure any OAuth2 provider)
+
+3rd party providers:
+
+- [SAML](https://github.com/spider-gazelle/multi_auth_saml/) (with [RFC 7522](https://datatracker.ietf.org/doc/html/rfc7522): OAuth 2.0 token exchange)
 
 ## Installation
 
