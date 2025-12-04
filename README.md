@@ -34,7 +34,7 @@ dependencies:
 ```crystal
   require "multi_auth"
 
-  MultiAuth.config("github", ENV['ID'], ENV['SECRET']) # configuration
+  MultiAuth.config("github", ENV["ID"], ENV["SECRET"]) # configuration
 
   multi_auth = MultiAuth.make(provider, redirect_uri) # initialize engine
   multi_auth.authorize_uri  # URL to provider authentication dialog
@@ -106,7 +106,7 @@ end
 class OAuth::Handler::Callback < BrowserAction
   get "/oauth/:provider/callback" do
     user = MultiAuthHandler.user(provider, request.query_params)
-    text user.email.to_s
+    plain_text user.email.to_s
   end
 end
 ```
